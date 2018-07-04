@@ -1,3 +1,24 @@
+/*           AUTHOR : Mahmoud Kassem 
+
+
+
+	     As the Problem is asking the ip addresses which are palindromes and consisting of the digits given , we can try to brute force
+	     all possible IP addresses and consider only the palindromes out of them as the answer , unfortunatly this approach would have 
+	     high complexity e.g. around (2 ^ (8 * 4)) , (four numbers each ranges from 0 ~ 255) . 
+
+		
+	     To overcome such a problem we can brute force the answer while constructing the palindrome itself , and then checks if the 
+	     string is a valid answer (all digits are considered in the string , no number is greater than 8 bits .. etc) 
+	     
+
+	     This will reduce the complexity to make it reach around ((10 ^ 6) * Complexity of check Function) . 
+	     
+	     
+	     Complexity of check Function ~= length of the given string . 
+
+
+*/ 
+
 #include <iostream>
 #include<algorithm>
 #include<string>
