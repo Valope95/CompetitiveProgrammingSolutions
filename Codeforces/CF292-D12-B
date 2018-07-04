@@ -1,0 +1,179 @@
+/*
+  AUTHOR : Mahmoud Kassem 
+
+  In this problem we have to simply check if the graph is consisting of a long chain (bus) , single cycel (ring) , or a star otherwise 
+  it will be considered Unknown . 
+
+  I overkilled this problem as I considered that the given graph is not necessiarly connected and gave a function to check each of the  
+  topologies given mentioned above .
+  
+  Complexity O(N + M) ..... (Normal dfs complexity)
+  
+*/
+
+#include <iostream>
+#include<algorithm>
+#include<string>
+#include<map>
+#include <iterator>
+#include<iomanip>
+#include<vector>
+#include<cmath>
+#include <cstdio>
+#include<queue>
+#include<stack>
+#include<list>
+#include<stdio.h>
+#include<set>
+#include <functional>
+
+#define mod 1000000007
+#define mod2 30000000
+#define pa(a,b) make_pair(a,b)
+#define f first
+#define s second
+#define pb(a)  push_back(a)
+#define all(a) a.begin() , a.end()
+#define mem(a, b) memset(a, b, sizeof(a))
+#define LL  long long int
+#define oo 1e9
+#define pi 3.14159265359
+#define eps  1e-9
+
+
+
+LL maxx(LL a , LL b){ return a>b ?  a : b ;}
+LL minn(LL a , LL b){ return a>b ?  b : a ;}
+
+using namespace std;
+int dx[] = {1 , 1 ,1 , 0 , 0  , -1 , -1  , -1  , 0 };
+int dy[] = { -1 , 0  , 1 , 1 , -1 , 0 , 1 , -1 , 0 };
+void boostIO()
+{
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+}
+LL gcd(LL a, LL b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
+LL lcm(LL a , LL b )
+{
+    return (a*b)/gcd(a , b);
+}
+LL poww(LL base, LL exp){
+  base %= mod;
+  LL result = 1;
+  while (exp > 0) {
+    if (exp & 1) result = (result * base) % mod;
+    base = (base * base) % mod;
+    exp >>= 1;
+  }
+  return result;
+}
+int n , m  , cnt ; vector<int>a[100100];
+vector<pair<int , int>> p ;
+bool vis[100100][2] ;    vector<int>num;
+bool star()
+{
+    int node = 0 ;
+
+    for(int i = 1 ; i <= n ; i++){
+        if(a[i].size() == n - 1){
+            node = i ;
+            break ;
+        }
+    }
+
+    for(int i = 1 ; i <= n ; i++){
+        if(i == node){
+            continue ;
+        }
+        if(a[i].size() != 1){
+            return 0  ;
+        }
+        if(a[i][0] != node){
+            return 0 ;
+        }
+
+    }
+    return 1 ;
+}
+bool ring(int root)
+{
+    vis[root][0] = 1 ; cnt = cnt + 1 ;
+    bool ret = 0 ; int num = 0 ;
+    for(int i = 0 ; i < a[root].size()  ; i++){
+        if(!vis[a[root][i]][0]){
+            num = num + 1 ;
+        }
+    }
+    if(num >= 2){
+        if(num == 2 && root == 1){
+
+        }
+        else
+            return 0 ;
+    }
+    for(int i = 0 ; i < a[root].size() ; i++){
+        if(a[root][i] == 1 && cnt == n && num == 0){
+            return 1 ;
+        }
+        if(!vis[a[root][i]][0]){
+            ret = (ret || ring(a[root][i])) ;
+        }
+    }
+
+    return ret ;
+}
+bool connected(int root)
+{
+    vis[root][1] = 1 ; cnt = cnt + 1 ;
+
+    for(int i = 0 ; i < a[root].size() ; i++){
+        if(!vis[a[root][i]][1]){
+            return connected(a[root][i]) ;
+        }
+    }
+    return (root == num[1] && cnt == n) ;
+}
+bool bus()
+{
+    for(int i = 1 ; i <= n ; i++){
+        if(a[i].size() == 1){
+            num.pb(i) ;
+        }
+        else if(a[i].size() != 2){
+            return 0 ;
+        }
+    }
+    if(num.size() != 2)
+        return 0 ;
+
+    cnt = 0 ;
+
+    return connected(num[0]) ;
+}
+int main()
+{
+    cin >> n >> m ;
+
+    for(int i = 0 ; i < m ; i++){
+        int x , y ; cin >> x >> y ;
+        a[x].pb(y) , a[y].pb(x) ;
+        p.pb(pa(x , y)) ;
+    }
+
+    if(star()){
+        cout << "star topology" << endl ;
+    }
+    else if(ring(1)){
+        cout << "ring topology" << endl ;
+    }
+    else if(bus()){
+        cout << "bus topology" << endl ;
+    }
+    else {
+        cout << "unknown topology" << endl ;
+    }
+}
