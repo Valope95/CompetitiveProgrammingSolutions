@@ -1,0 +1,120 @@
+/*
+    AUTHOR : Mahmoud Kassem   
+    Problem : CF425 - D1 - A  
+    
+    In this Problem we can simply brute force to the solution with a simple greedy approache , so that we try every possible pair of 
+    l and r and store the values between them in  a priority queue. 
+
+    Then we check greedly in the whole array for the largest number that is not located inside the range (l , r) and have value greater 
+    than the smallest value in the current range (l , r) . 
+    
+    If you found some value applying the both conditions then you pop the value of the priority queue and checks if the range is empty or
+    you have passed the maximum number of allowed swaps . 
+
+    And then we take the largest value among all possible pairs of (l , r)  . 
+*/
+
+
+#include <iostream>
+#include<algorithm>
+#include<string>
+#include<map>
+#include <iterator>
+#include<iomanip>
+#include<vector>
+#include<cmath>
+#include <cstdio>
+#include<queue>
+#include<stack>
+#include<list>
+#include<stdio.h>
+#include<set>
+#include <functional>
+
+#define mod 1000000007
+#define mod2 30000000
+#define pa(a,b) make_pair(a,b)
+#define f first
+#define s second
+#define pb(a)  push_back(a)
+#define all(a) a.begin() , a.end()
+#define mem(a, b) memset(a, b, sizeof(a))
+#define LL  long long int
+#define oo 1e9
+#define pi 3.14159265359
+#define eps  1e-9
+
+
+
+LL maxx(LL a , LL b){ return a>b ?  a : b ;}
+LL minn(LL a , LL b){ return a>b ?  b : a ;}
+
+using namespace std;
+int dx[] = {1 , 1 ,1 , 0 , 0  , -1 , -1  , -1  , 0 };
+int dy[] = { -1 , 0  , 1 , 1 , -1 , 0 , 1 , -1 , 0 };
+void boostIO()
+{
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+}
+LL gcd(LL a, LL b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
+LL lcm(LL a , LL b )
+{
+    return (a*b)/gcd(a , b);
+}
+LL poww(LL base, LL exp){
+  base %= mod;
+  LL result = 1;
+  while (exp > 0) {
+    if (exp & 1) result = (result * base) % mod;
+    base = (base * base) % mod;
+    exp >>= 1;
+  }
+  return result;
+}
+int a[1000] , n  , k;
+pair<int , int>b[1001] ;
+priority_queue<int>q ;
+int check(int l , int r , int cost)
+{
+    int swaps = k ;
+    for(int i = 1 ; i <= n ; i++){
+
+        if(b[i].f > -q.top() && !(l <= b[i].s && r >= b[i].s)){
+            cost = cost + q.top() ; cost = cost + b[i].f ;
+            q.pop() ; swaps-- ;
+            if(q.empty() || !swaps){
+                break ;
+            }
+        }
+    }
+
+    return cost ;
+}
+int main()
+{
+    cin >> n  >> k ;
+
+    for(int i = 1 ; i <= n ; i++){
+        cin >> a[i] ;
+        b[i] = pa(a[i] , i) ;
+    }
+
+    sort(b + 1 , b + n + 1)  , reverse(b + 1 , b + n + 1);
+
+    int ans = -1e9 ;
+
+    for(int i = 1 ; i <= n ; i++){
+        int temp = 0 ; priority_queue<int>pq ;
+        for(int j = i ; j <= n ; j++){
+            temp = temp + a[j] ; pq.push(-a[j]) ;
+            q = pq ;
+            ans = max(ans , check(i , j , temp)) ;
+        }
+    }
+
+    cout << ans << endl ;
+}
