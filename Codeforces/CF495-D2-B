@@ -1,0 +1,104 @@
+#include <iostream>
+#include<algorithm>
+#include<string>
+#include<map>
+#include <iterator>
+#include<iomanip>
+#include<vector>
+#include<cmath>
+#include <cstdio>
+#include<queue>
+#include<stack>
+#include<list>
+#include<stdio.h>
+#include<set>
+#include <functional>
+
+#define mod 1000000007
+#define mod2 30000000
+#define pa(a,b) make_pair(a,b)
+#define f first
+#define s second
+#define pb(a)  push_back(a)
+#define all(a) a.begin() , a.end()
+#define mem(a, b) memset(a, b, sizeof(a))
+#define LL  long long int
+#define oo 1e9
+#define pi 3.14159265359
+#define eps  1e-9
+
+
+
+LL maxx(LL a , LL b){ return a>b ?  a : b ;}
+LL minn(LL a , LL b){ return a>b ?  b : a ;}
+
+using namespace std;
+int dx[] = {1 , 1 ,1 , 0 , 0  , -1 , -1  , -1  , 0 };
+int dy[] = { -1 , 0  , 1 , 1 , -1 , 0 , 1 , -1 , 0 };
+void boostIO()
+{
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+}
+LL gcd(LL a, LL b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
+LL lcm(LL a , LL b )
+{
+    return (a*b)/gcd(a , b);
+}
+LL poww(LL base, LL exp){
+  base %= mod;
+  LL result = 1;
+  while (exp > 0) {
+    if (exp & 1) result = (result * base) % mod;
+    base = (base * base) % mod;
+    exp >>= 1;
+  }
+  return result;
+}
+bool vis[200200] ; vector<pair<int , int>>a ;
+int cost(string s)
+{
+    int ret = 0   ;
+    for(int i = 0 ; i < a.size() ; i++){
+        int  cnt[2] = {0} ;
+        for(int j = a[i].f ; j <= a[i].s ; j++){
+            cnt[s[j] - '0']++ ;
+        }
+
+        ret = ret + (cnt[0] * cnt[1]) ;
+    }
+
+    return ret ;
+}
+int main()
+{
+    int n , m ;  cin >> n >> m ;
+    string one = "" , two = "" ;
+    for(int i = 0 ; i <= n; i++){
+        if(i % 2 == 1){
+            one = one + "1" ;
+            two = two + "0" ;
+        }
+        else{
+            one = one + "0" ;
+            two = two + "1" ;
+        }
+    }
+
+    for(int i = 0 ; i < m ; i++){
+        int l , r ; cin >> l >> r ;
+        a.pb(pa(l , r)) ;
+    }
+
+    if(cost(one) > cost(two)){
+        one.erase(one.begin()) ;
+        cout << one << endl ;
+    }
+    else {
+        two.erase(two.begin()) ;
+        cout << two << endl ;
+    }
+}
