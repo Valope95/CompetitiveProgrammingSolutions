@@ -1,0 +1,176 @@
+/**
+      AUTHOR : Mahmoud Kassem 
+
+      Email : m_m_kassem@hotmail.com  
+
+
+     The answer is the MST as it's a tree so we get the MST of the graph then obtain the distance between each node and every other nodes
+     
+     Then we compare it with the given distances if the fit then the graph exists  .
+
+*/
+
+
+
+
+
+#include <iostream>
+#include<algorithm>
+#include<string>
+#include<map>
+#include <iterator>
+#include<iomanip>
+#include<vector>
+#include<cmath>
+#include <cstdio>
+#include<queue>
+#include<stack>
+#include<list>
+#include<stdio.h>
+#include<set>
+#include <functional>
+
+#define mod 1000000007
+#define mod2 30000000
+#define pa(a,b) make_pair(a,b)
+#define f first
+#define s second
+#define pb(a)  push_back(a)
+#define all(a) a.begin() , a.end()
+#define mem(a, b) memset(a, b, sizeof(a))
+#define LL  long long int
+#define oo 1e9
+#define pi 3.14159265359
+#define eps  1e-9
+
+
+
+LL maxx(LL a , LL b){ return a>b ?  a : b ;}
+LL minn(LL a , LL b){ return a>b ?  b : a ;}
+
+using namespace std;
+int dx[] = {1 , 1 ,1 , 0 , 0  , -1 , -1  , -1  , 0 };
+int dy[] = { -1 , 0  , 1 , 1 , -1 , 0 , 1 , -1 , 0 };
+void boostIO()
+{
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+}
+LL gcd(LL a, LL b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
+LL lcm(LL a , LL b )
+{
+    return (a*b)/gcd(a , b);
+}
+LL poww(LL base, LL exp){
+  base %= mod;
+  LL result = 1;
+  while (exp > 0) {
+    if (exp & 1) result = (result * base) % mod;
+    base = (base * base) % mod;
+    exp >>= 1;
+  }
+  return result;
+}
+LL grid[2500][2500]  , n , dist[2500][2500] ;
+vector<pair<int , pair<int , int>>>edges ;
+vector<pair<int , int>>a[5000] ;
+int link[100100] , size[100100] ;
+int find(int x) {
+    return (x == link[x] ? x : link[x] = find(link[x])) ;
+}
+bool connected(int a, int b) {
+    return find(a) == find(b);
+}
+void unite(int a, int b) {
+    a = find(a);
+    b = find(b);
+    if (size[a] < size[b]) swap(a,b);
+    size[a] += size[b];
+    link[b] = a;
+}
+void MST()
+{
+    for(int i = 1 ; i <= 10010 ; i++){
+        size[i] = 1 , link[i] = i ;
+    }
+    for(int i = 0 ; i < edges.size() ; i++){
+        if(!connected(edges[i].s.f , edges[i].s.s)){
+            a[edges[i].s.f].pb(pa(edges[i].s.s , edges[i].f)) ;
+            a[edges[i].s.s].pb(pa(edges[i].s.f , edges[i].f)) ;
+            unite(edges[i].s.f , edges[i].s.s) ;
+        }
+    }
+
+    return ;
+}
+void bfs(int source)
+{
+    for(int i = 1 ; i <= 2100 ; i++){
+        dist[source][i] = 1e18 ;
+    }
+
+    dist[source][source] = 0 ;
+
+    queue<int>q; q.push(source) ;
+
+    while(!q.empty()){
+        int node = q.front() ; q.pop() ;
+
+        for(int i = 0 ; i < a[node].size() ; i++){
+            if(dist[source][a[node][i].f] == 1e18){
+                dist[source][a[node][i].f] = dist[source][node] + a[node][i].s ;
+                q.push(a[node][i].f) ;
+            }
+        }
+
+    }
+
+    return ;
+}
+int main()
+{
+    //boostIO() ;
+    cin >> n ;
+
+    for(int i = 1 ; i <= n ; i++){
+        for(int j = 1 ; j <= n ; j++){
+            scanf("%d" , &grid[i][j]) ;
+        }
+    }
+    for(int i = 1 ; i <= n ; i++){
+        for(int j = 1 ; j <= n ; j++){
+            if(i == j)
+                continue ;
+
+            edges.pb(pa(grid[i][j] , pa(i , j))) ;
+        }
+    }
+
+    sort(all(edges)) ;
+
+    MST() ;
+
+    for(int i = 1 ; i <= n ; i++){
+        bfs(i) ;
+    }
+
+    for(int i = 1 ; i <= n ; i++){
+        for(int j = 1 ; j <= n ; j++){
+            if(dist[i][j] != grid[i][j]){
+                cout << "NO" << endl ;
+                return 0 ;
+            }
+            else if(i == j)
+                continue ;
+            else if(dist[i][j] <= 0){
+                cout << "NO" << endl ;
+                return 0 ;
+            }
+        }
+    }
+
+    cout << "YES" << endl ;
+}
